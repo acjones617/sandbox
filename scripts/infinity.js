@@ -1,19 +1,19 @@
 
 var specs = {
-  width: 1000,
+  width: 1300,
   height: 500
 };
 
 
-var x = 400
+var x = 600
 var params = {
   cx: specs.width/2,
   cy: specs.height/2,
   x: x,
   y: x*0.3,
-  r: 15,
-  delay: 10,
-  trans: 100  
+  r: x/25,
+  delay: 15,
+  trans: 800  
 }
 
 var svg = d3.select("body").append("svg")
@@ -48,17 +48,18 @@ var allCirc = function(data) {
     .attr('cy', function(d) { return d.y; })
     .attr('r', function(d) { return d.r })
     .attr('opacity', 1e-6)
-    .transition().duration(params.trans*20)
+    .transition().duration(params.trans*5)
     .attr('opacity', 1);
 
     circles.enter().append('circle')
     .attr('class', 'infinity')
     .attr('cx', function(d) { return d.x; })
     .attr('cy', function(d) { return d.y; })
-    .attr('r', function(d) { return d.r })
+    .attr('r', function(d) { return d.r/4 })
     .attr('opacity', 1e-6)
     .transition().duration(params.trans*20)
-    .attr('opacity', 1);
+    .attr('opacity', 1)
+    .attr('r', function(d) { return d.r*2 });
 }
 
 var Point = function (xProp, yProp, r) {
@@ -177,13 +178,9 @@ var updateCircles = function(data, dataMove) {
   moveCirc(dataMove);
   setTimeout(function() {
     moveCirc([]);
-    console.log('empty');
     setTimeout(function() {
       allCirc(data);
-    }, dataMove.length*params.delay + params.trans * 3)
-  }, params.trans*3);
+    }, (dataMove.length)*params.delay + params.trans * 1)
+  }, params.trans);
 }
 
-// $('document').on('ready', function() {
-//   $('document').children('circles').
-// })
