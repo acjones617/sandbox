@@ -44,6 +44,12 @@ var keepLastRunDelay = function(d, i) {
   }
 }
 
+var alternateColors = function(d, i) {
+  if (i % 2 === 0) {
+    return 'orange';
+  }
+  return 'black';
+}
 
 var moveCirc = function(data) {
   var circles = svg.selectAll('circle').data(data);
@@ -53,6 +59,7 @@ var moveCirc = function(data) {
     .attr('cx', function(d) { return d.x; })
     .attr('cy', function(d) { return d.y; })
     .attr('r', 0)
+    .attr('fill', alternateColors)
     .transition().duration(params.trans)
     .delay(function(d, i) { return i * params.delay; })
     .attr('r', function(d) {return d.r; });
