@@ -23,8 +23,7 @@ var svg = d3.select("body").append("svg")
 var keepLastRunRadius = function (d, i) {
   if (i < 184) {
     return 0
-  }
-  else {
+  } else {
     return params.r*2;
   }
 }
@@ -32,9 +31,16 @@ var keepLastRunRadius = function (d, i) {
 var keepLastRunDuration = function (d, i) {
   if (i < 184) {
     return params.trans
-  }
-  else {
+  } else {
     return params.trans*5;
+  }
+}
+
+var keepLastRunDelay = function(d, i) {
+  if (i < 184) {
+    return i * params.delay;
+  } else {
+    return 276 * params.delay;
   }
 }
 
@@ -49,42 +55,17 @@ var moveCirc = function(data) {
     .attr('r', 0)
     .transition().duration(params.trans)
     .delay(function(d, i) { return i * params.delay; })
-    .attr('r', params.r);
+    .attr('r', function(d) {return d.r; });
 
   circles.exit().transition().duration(keepLastRunDuration)
-    .delay(function(d, i) { return i * params.delay; })
+    .delay(keepLastRunDelay)
     .attr('r', keepLastRunRadius);
 //    .remove()
-}
-
-var allCirc = function(data) {
-  var circles = svg.selectAll('circle').data(data);
-  console.log('all circles');
-
-  //update
-  circles
-    .attr('cx', function(d) { return d.x; })
-    .attr('cy', function(d) { return d.y; })
-    .attr('r', function(d) { return d.r })
-    .attr('opacity', 1e-6)
-    .transition().duration(params.trans*5)
-    .attr('opacity', 1);
-
-    circles.enter().append('circle')
-    .attr('class', 'infinity')
-    .attr('cx', function(d) { return d.x; })
-    .attr('cy', function(d) { return d.y; })
-    .attr('r', function(d) { return d.r/4 })
-    .attr('opacity', 1e-6)
-    .transition().duration(params.trans*20)
-    .attr('opacity', 1)
-    .attr('r', function(d) { return d.r*2 });
 }
 
 var Point = function (xProp, yProp, r) {
   this.x = params.cx + params.x * xProp;
   this.y = params.cy + params.y * yProp;
-  //this.r = r || params.r;
   this.r = r || params.r;
 }
 
@@ -193,13 +174,13 @@ var infinity = [
 
 infinityMove = infinity.concat(infinity).concat(infinity);
 
-var updateCircles = function(data, dataMove) {
-  moveCirc(dataMove);
+var updateCircles = function(data) {
+  moveCirc(data);
   setTimeout(function() {
     moveCirc([]);
-    // setTimeout(function() {
-    //   allCirc(data);
-    // }, (dataMove.length)*params.delay + params.trans * 1)
   }, params.trans);
 }
 
+$('document').ready(function() {
+  updateCircles(infinityMove);
+});
