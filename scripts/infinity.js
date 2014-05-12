@@ -10,7 +10,7 @@ var params = {
   cx: specs.width/2,
   cy: specs.height/2,
   x: x,
-  y: x*0.3,
+  y: x*0.25,
   r: x/25,
   delay: 15,
   trans: 800  
@@ -19,6 +19,25 @@ var params = {
 var svg = d3.select("body").append("svg")
     .attr("width", specs.width)
     .attr("height", specs.height);
+
+var keepLastRunRadius = function (d, i) {
+  if (i < 184) {
+    return 0
+  }
+  else {
+    return params.r*2;
+  }
+}
+
+var keepLastRunDuration = function (d, i) {
+  if (i < 184) {
+    return params.trans
+  }
+  else {
+    return params.trans*5;
+  }
+}
+
 
 var moveCirc = function(data) {
   var circles = svg.selectAll('circle').data(data);
@@ -32,10 +51,10 @@ var moveCirc = function(data) {
     .delay(function(d, i) { return i * params.delay; })
     .attr('r', params.r);
 
-  circles.exit().transition().duration(params.trans)
+  circles.exit().transition().duration(keepLastRunDuration)
     .delay(function(d, i) { return i * params.delay; })
-    .attr('r', 0)
-    .remove()
+    .attr('r', keepLastRunRadius);
+//    .remove()
 }
 
 var allCirc = function(data) {
@@ -178,9 +197,9 @@ var updateCircles = function(data, dataMove) {
   moveCirc(dataMove);
   setTimeout(function() {
     moveCirc([]);
-    setTimeout(function() {
-      allCirc(data);
-    }, (dataMove.length)*params.delay + params.trans * 1)
+    // setTimeout(function() {
+    //   allCirc(data);
+    // }, (dataMove.length)*params.delay + params.trans * 1)
   }, params.trans);
 }
 
